@@ -1,0 +1,28 @@
+create table Emp(eid int(10),ename varchar(20),age int(10));
+
+insert into emp values(1,"JOE",25);
+insert into emp values(2,"CARY",30);
+insert into emp values(3,"Triver",31);
+
+CREATE TABLE Empp AS
+SELECT *, ROW_NUMBER() OVER (PARTITION BY eid,ename,age ORDER BY eid) AS row_num
+FROM emp;
+
+delete from empp where row_num>1;
+
+alter table empp drop column row_num;
+
+delete from emp;
+
+insert into emp select * from empp;
+
+//optimised
+create table emp(empid int(2), empname varchar(10));
+insert into emp values(1, "joe");
+insert into emp values(1, "joe");
+insert into emp values(1, "joe");
+insert into emp values(2, "harry");
+insert into emp values(2, "harry");
+insert into emp values(3, "aisha");
+
+delete from emp where rowid not in(select min(rowid) from emp group by empid );
